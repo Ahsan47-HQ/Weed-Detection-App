@@ -1,0 +1,245 @@
+@import "tailwindcss";
+
+/* -----------------------------
+   Global
+------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  body {
+    font-family: "IBM Plex Sans", sans-serif;
+  }
+
+  color: white;
+
+  background: radial-gradient(circle at top left, #2d6a4f 0%, transparent 35%),
+  radial-gradient(circle at bottom right, #1b4332 0%, transparent 30%),
+  linear-gradient(135deg, #081c15, #040b08);
+
+  overflow-x: hidden;
+}
+
+/* React root */
+
+#root {
+  min-height: 100vh;
+}
+
+/* -----------------------------
+   Images
+------------------------------ */
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* -----------------------------
+   Glassmorphism
+------------------------------ */
+
+.glass {
+
+  background: rgba(255, 255, 255, 0.08);
+
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  box-shadow:
+
+    0 8px 30px rgba(0, 0, 0, .35);
+
+}
+
+/* -----------------------------
+   Hover Lift
+------------------------------ */
+
+.hover-card {
+
+  transition:
+
+    transform .35s ease,
+
+    box-shadow .35s ease;
+
+}
+
+.hover-card:hover {
+
+  transform: translateY(-8px);
+
+  box-shadow:
+
+    0 15px 40px rgba(0, 255, 140, .15);
+
+}
+
+/* -----------------------------
+   Fade
+------------------------------ */
+
+@keyframes fadeIn {
+
+  from {
+
+    opacity: 0;
+
+  }
+
+  to {
+
+    opacity: 1;
+
+  }
+
+}
+
+.fade {
+
+  animation: fadeIn .8s ease;
+
+}
+
+/* -----------------------------
+   Slide Up
+------------------------------ */
+
+@keyframes slideUp {
+
+  from {
+
+    opacity: 0;
+
+    transform: translateY(35px);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform: translateY(0);
+
+  }
+
+}
+
+.slide {
+
+  animation: slideUp .7s ease;
+
+}
+
+/* -----------------------------
+   Scale In
+------------------------------ */
+
+@keyframes pop {
+
+  from {
+
+    opacity: 0;
+
+    transform: scale(.9);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform: scale(1);
+
+  }
+
+}
+
+.pop {
+
+  animation: pop .5s ease;
+
+}
+
+/* -----------------------------
+   Floating Background
+------------------------------ */
+
+.blob {
+
+  position: absolute;
+
+  border-radius: 50%;
+
+  filter: blur(80px);
+
+  opacity: .25;
+
+  animation: float 12s ease-in-out infinite;
+
+}
+
+.blob-1 {
+
+  width: 280px;
+
+  height: 280px;
+
+  background: #52b788;
+
+  top: -60px;
+
+  left: -80px;
+
+}
+
+.blob-2 {
+
+  width: 350px;
+
+  height: 350px;
+
+  background: #40916c;
+
+  bottom: -100px;
+
+  right: -100px;
+
+  animation-delay: 4s;
+
+}
+
+@keyframes float {
+
+  0% {
+
+    transform: translateY(0px);
+
+  }
+
+  50% {
+
+    transform: translateY(-35px);
+
+  }
+
+  100% {
+
+    transform: translateY(0);
+
+  }
+
+}

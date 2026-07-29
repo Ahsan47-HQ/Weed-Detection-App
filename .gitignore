@@ -42,3 +42,8 @@ Thumbs.db
 # Misc
 # ----------------------------
 *.log
+
+# ----------------------------
+# All Requirements (frontend + backend)
+# ----------------------------
+requirements.txt

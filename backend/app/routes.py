@@ -4,7 +4,7 @@ import base64
 
 from fastapi import APIRouter, UploadFile, File, HTTPException
 
-from app.predictor import WeedPredictor
+from app.predictor import WeedPredictorONNX
 from app.visualizer import Visualizer
 
 from app.schemas import PredictionResponse
@@ -15,7 +15,7 @@ router = APIRouter()
 
 # Load the model only once when FastAPI starts
 
-predictor = WeedPredictor("models/best.pt")
+predictor = WeedPredictorONNX("models/best.onnx")   # was best.pt
 visualizer = Visualizer()
 
 # Home page
@@ -34,95 +34,10 @@ def health():
     }
 
 # Prediction Endpoint
-@router.post('/predict',response_model=PredictionResponse)
-# The function is asynchronous because reading uploaded files is an I/O operation.
-# Instead of blocking the server while reading the file, FastAPI can handle other requests.
+@router.post('/predict', response_model=PredictionResponse)
 async def predict(file: UploadFile = File(...)):
-    # The user uploads an image and gets a segmented image as output
-
-    # Validating file type
     if not file.content_type.startswith('image/'):
-        raise HTTPException(
-            status_code=400,
-            detail="Upload an image file please!"
-        )
-    
-    # # Read Uploaded bytes
-    # image_bytes = await file.read()
-
-    # # Convert bytes of ndarray
-    # image = cv2.imdecode(
-    #     np.frombuffer(image_bytes,np.uint8),
-    #     cv2.IMREAD_COLOR
-    # )
-    # # Resize down if too large — cap longest side at 640-1024px
-    # max_dim = 1024
-    # h, w = image.shape[:2]
-    # if max(h, w) > max_dim:
-    #     scale = max_dim / max(h, w)
-    #     image = cv2.resize(image, (int(w * scale), int(h * scale)))
-
-    # # Non image content, just with an image extension
-    # if image is None:
-    #     raise HTTPException(
-    #         status_code=400,
-    #         detail="Invalid Image!"
-    #     )
-
-
-    # try:
-    #     # Run Inference
-    #     output = predictor.predict(image)
-        
-    #     # Render Visualization
-    #     annotated_image, weed_count, predicted_class, confidence = visualizer.render(
-    #         image=output["original_image"],
-    #         prediction=output["prediction"]
-    #     )
-
-    # except Exception as e:
-    #     print("PREDICT ERROR:", repr(e))
-    #     raise
-
-    # # Convert image to png (np.ndarray to .png)
-
-    # success, encoded_img = cv2.imencode(
-    #     ".png",
-    #     annotated_image
-    # )
-
-    # if not success:
-    #     raise HTTPException(
-    #         status_code=500, 
-    #         detail='Could not encode output image'
-    #     )
-    
-    # image_b64 = base64.b64encode(encoded_img).decode("utf-8")
-
-    # # FastAPI auto-converts to JSON
-    # return PredictionResponse(
-    #     image=image_b64,
-    #     weed_count=weed_count,
-    #     predicted_class=predicted_class,
-    #     confidence=confidence,
-    #     inference_time_ms=output["inference_time_ms"],
-    #     legend={
-    #         "weed": "#00FF00",
-    #         "background": "#808080"
-    #     }
-    # )
-
-    # return PredictionResponse(
-    #     image="",
-    #     weed_count=0,
-    #     predicted_class="Test",
-    #     confidence=0.0,
-    #     inference_time_ms=0.0,
-    #     legend={
-    #         "weed": "#00FF00",
-    #         "background": "#808080"
-    #     }
-    # )
+        raise HTTPException(status_code=400, detail="Upload an image file please!")
 
     image_bytes = await file.read()
     image = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
@@ -136,12 +51,17 @@ async def predict(file: UploadFile = File(...)):
         scale = max_dim / max(h, w)
         image = cv2.resize(image, (int(w * scale), int(h * scale)))
 
-    output = predictor.predict(image)   # REAL inference, not stubbed
+    output = predictor.predict(image)
 
-    # TEMP stub — skip visualizer
-    annotated_image, weed_count, predicted_class, confidence = image, 0, "Test", 0
+    annotated_image, weed_count, predicted_class, confidence = visualizer.render(
+        image=output["original_image"],
+        prediction=output
+    )
 
     success, encoded_img = cv2.imencode(".png", annotated_image)
+    if not success:
+        raise HTTPException(status_code=500, detail='Could not encode output image')
+
     image_b64 = base64.b64encode(encoded_img).decode("utf-8")
 
     return PredictionResponse(

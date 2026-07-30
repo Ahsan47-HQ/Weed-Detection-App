@@ -1,6 +1,4 @@
-# ----------------------------
 # Python
-# ----------------------------
 venv/
 .venv/
 __pycache__/
@@ -11,15 +9,11 @@ __pycache__/
 .mypy_cache/
 .coverage
 
-# ----------------------------
 # Environment Variables
-# ----------------------------
 .env
 .env.*
 
-# ----------------------------
 # Node
-# ----------------------------
 node_modules/
 dist/
 build/
@@ -27,23 +21,18 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# ----------------------------
 # VS Code
-# ----------------------------
 .vscode/
 
-# ----------------------------
 # OS Files
-# ----------------------------
 .DS_Store
 Thumbs.db
 
-# ----------------------------
 # Misc
-# ----------------------------
 *.log
 
-# ----------------------------
 # All Requirements (frontend + backend)
-# ----------------------------
 requirements.txt
+
+# YOLO best.pt file
+best.pt

@@ -47,7 +47,7 @@ function UploadCard({ darkMode, setPrediction, setLoading, setError }) {
         try {
             const formData = new FormData();
             formData.append("file", image);
-
+            console.log("API URL:", API_URL);
             const response = await fetch(`${API_URL}/predict`, {
                 method: "POST",
                 body: formData,

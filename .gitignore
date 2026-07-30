@@ -36,3 +36,6 @@ requirements.txt
 
 # YOLO best.pt file
 best.pt
+
+# Landing Page image
+landing_page.png

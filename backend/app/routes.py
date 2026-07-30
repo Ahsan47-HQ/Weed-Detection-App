@@ -70,42 +70,54 @@ async def predict(file: UploadFile = File(...)):
         )
 
 
-    try:
-        # Run Inference
-        output = predictor.predict(image)
+    # try:
+    #     # Run Inference
+    #     output = predictor.predict(image)
         
-        # Render Visualization
-        annotated_image, weed_count, predicted_class, confidence = visualizer.render(
-            image=output["original_image"],
-            prediction=output["prediction"]
-        )
+    #     # Render Visualization
+    #     annotated_image, weed_count, predicted_class, confidence = visualizer.render(
+    #         image=output["original_image"],
+    #         prediction=output["prediction"]
+    #     )
 
-    except Exception as e:
-        print("PREDICT ERROR:", repr(e))
-        raise
+    # except Exception as e:
+    #     print("PREDICT ERROR:", repr(e))
+    #     raise
 
-    # Convert image to png (np.ndarray to .png)
+    # # Convert image to png (np.ndarray to .png)
 
-    success, encoded_img = cv2.imencode(
-        ".png",
-        annotated_image
-    )
+    # success, encoded_img = cv2.imencode(
+    #     ".png",
+    #     annotated_image
+    # )
 
-    if not success:
-        raise HTTPException(
-            status_code=500, 
-            detail='Could not encode output image'
-        )
+    # if not success:
+    #     raise HTTPException(
+    #         status_code=500, 
+    #         detail='Could not encode output image'
+    #     )
     
-    image_b64 = base64.b64encode(encoded_img).decode("utf-8")
+    # image_b64 = base64.b64encode(encoded_img).decode("utf-8")
 
-    # FastAPI auto-converts to JSON
+    # # FastAPI auto-converts to JSON
+    # return PredictionResponse(
+    #     image=image_b64,
+    #     weed_count=weed_count,
+    #     predicted_class=predicted_class,
+    #     confidence=confidence,
+    #     inference_time_ms=output["inference_time_ms"],
+    #     legend={
+    #         "weed": "#00FF00",
+    #         "background": "#808080"
+    #     }
+    # )
+
     return PredictionResponse(
-        image=image_b64,
-        weed_count=weed_count,
-        predicted_class=predicted_class,
-        confidence=confidence,
-        inference_time_ms=output["inference_time_ms"],
+        image="",
+        weed_count=0,
+        predicted_class="Test",
+        confidence=0.0,
+        inference_time_ms=0.0,
         legend={
             "weed": "#00FF00",
             "background": "#808080"

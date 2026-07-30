@@ -46,56 +46,43 @@ async def predict(file: UploadFile = File(...)):
             status_code=400,
             detail="Upload an image file please!"
         )
-
-    print("A: File validated")
-
+    
+    # Read Uploaded bytes
     image_bytes = await file.read()
-    print("B: File read")
 
+    # Convert bytes of ndarray
     image = cv2.imdecode(
-        np.frombuffer(image_bytes, np.uint8),
+        np.frombuffer(image_bytes,np.uint8),
         cv2.IMREAD_COLOR
     )
-    print("C: Image decoded")
+    # Resize down if too large — cap longest side at 640-1024px
+    max_dim = 1024
+    h, w = image.shape[:2]
+    if max(h, w) > max_dim:
+        scale = max_dim / max(h, w)
+        image = cv2.resize(image, (int(w * scale), int(h * scale)))
 
-    output = predictor.predict(image)
-    print("D: Prediction complete")
+    # Non image content, just with an image extension
+    if image is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid Image!"
+        )
 
-    annotated_image, weed_count, predicted_class, confidence = visualizer.render(
-        image=output["original_image"],
-        prediction=output["prediction"]
-    )
-    print("E: Visualization complete")
-    
-    # # Read Uploaded bytes
-    # image_bytes = await file.read()
 
-    # # Convert bytes of ndarray
-    # image = cv2.imdecode(
-    #     np.frombuffer(image_bytes,np.uint8),
-    #     cv2.IMREAD_COLOR
-    # )
+    try:
+        # Run Inference
+        output = predictor.predict(image)
+        
+        # Render Visualization
+        annotated_image, weed_count, predicted_class, confidence = visualizer.render(
+            image=output["original_image"],
+            prediction=output["prediction"]
+        )
 
-    # # Non image content, just with an image extension
-    # if image is None:
-    #     raise HTTPException(
-    #         status_code=400,
-    #         detail="Invalid Image!"
-    #     )
-
-    # try:
-    #     # Run Inference
-    #     output = predictor.predict(image)
-
-    #     # Render Visualization
-    #     annotated_image, weed_count, predicted_class, confidence = visualizer.render(
-    #         image=output["original_image"],
-    #         prediction=output["prediction"]
-    #     )
-
-    # except Exception as e:
-    #     print("PREDICT ERROR:", repr(e))
-    #     raise
+    except Exception as e:
+        print("PREDICT ERROR:", repr(e))
+        raise
 
     # Convert image to png (np.ndarray to .png)
 

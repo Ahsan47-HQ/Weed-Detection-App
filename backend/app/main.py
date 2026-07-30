@@ -16,7 +16,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
     "http://localhost:5173",
-    "https://weed-detection-app-9fv0.onrender.com",
+    "https://weed-detection-app.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],

@@ -47,27 +47,27 @@ async def predict(file: UploadFile = File(...)):
             detail="Upload an image file please!"
         )
     
-    # Read Uploaded bytes
-    image_bytes = await file.read()
+    # # Read Uploaded bytes
+    # image_bytes = await file.read()
 
-    # Convert bytes of ndarray
-    image = cv2.imdecode(
-        np.frombuffer(image_bytes,np.uint8),
-        cv2.IMREAD_COLOR
-    )
-    # Resize down if too large — cap longest side at 640-1024px
-    max_dim = 1024
-    h, w = image.shape[:2]
-    if max(h, w) > max_dim:
-        scale = max_dim / max(h, w)
-        image = cv2.resize(image, (int(w * scale), int(h * scale)))
+    # # Convert bytes of ndarray
+    # image = cv2.imdecode(
+    #     np.frombuffer(image_bytes,np.uint8),
+    #     cv2.IMREAD_COLOR
+    # )
+    # # Resize down if too large — cap longest side at 640-1024px
+    # max_dim = 1024
+    # h, w = image.shape[:2]
+    # if max(h, w) > max_dim:
+    #     scale = max_dim / max(h, w)
+    #     image = cv2.resize(image, (int(w * scale), int(h * scale)))
 
-    # Non image content, just with an image extension
-    if image is None:
-        raise HTTPException(
-            status_code=400,
-            detail="Invalid Image!"
-        )
+    # # Non image content, just with an image extension
+    # if image is None:
+    #     raise HTTPException(
+    #         status_code=400,
+    #         detail="Invalid Image!"
+    #     )
 
 
     # try:
@@ -112,15 +112,44 @@ async def predict(file: UploadFile = File(...)):
     #     }
     # )
 
+    # return PredictionResponse(
+    #     image="",
+    #     weed_count=0,
+    #     predicted_class="Test",
+    #     confidence=0.0,
+    #     inference_time_ms=0.0,
+    #     legend={
+    #         "weed": "#00FF00",
+    #         "background": "#808080"
+    #     }
+    # )
+
+    image_bytes = await file.read()
+    image = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
+
+    if image is None:
+        raise HTTPException(status_code=400, detail="Invalid Image!")
+
+    max_dim = 1024
+    h, w = image.shape[:2]
+    if max(h, w) > max_dim:
+        scale = max_dim / max(h, w)
+        image = cv2.resize(image, (int(w * scale), int(h * scale)))
+
+    output = predictor.predict(image)   # REAL inference, not stubbed
+
+    # TEMP stub — skip visualizer
+    annotated_image, weed_count, predicted_class, confidence = image, 0, "Test", 0
+
+    success, encoded_img = cv2.imencode(".png", annotated_image)
+    image_b64 = base64.b64encode(encoded_img).decode("utf-8")
+
     return PredictionResponse(
-        image="",
-        weed_count=0,
-        predicted_class="Test",
-        confidence=0.0,
-        inference_time_ms=0.0,
-        legend={
-            "weed": "#00FF00",
-            "background": "#808080"
-        }
+        image=image_b64,
+        weed_count=weed_count,
+        predicted_class=predicted_class,
+        confidence=confidence,
+        inference_time_ms=output["inference_time_ms"],
+        legend={"weed": "#00FF00", "background": "#808080"}
     )
     

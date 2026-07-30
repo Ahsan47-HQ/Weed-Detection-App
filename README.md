@@ -185,7 +185,6 @@ The frontend communicates with the backend through environment variables, allowi
 ## 🎯 Future Improvements
 
 - Grad-CAM visualizations
-- CBAM/SE-enhanced YOLO models
 - Batch image inference
 - Docker containerization
 - Mobile-friendly interface

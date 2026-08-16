@@ -32,7 +32,7 @@ Thumbs.db
 *.log
 
 # All Requirements (frontend + backend)
-requirements.txt
+/requirements.txt
 
 # YOLO best.pt file
 best.pt

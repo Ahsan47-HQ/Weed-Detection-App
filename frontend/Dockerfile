@@ -30,5 +30,5 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 
 # command
-CMD ["nginx","-g","daemon-off;"] 
+CMD ["nginx","-g","daemon off;"] 
 # daemon-off: we dont want the nginx server to run as a background service immediately, else docker might think the container is done

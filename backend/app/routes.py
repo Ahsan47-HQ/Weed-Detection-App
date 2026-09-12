@@ -11,7 +11,7 @@ from app.schemas import PredictionResponse
 
 import io
 
-router = APIRouter()
+router = APIRouter(prefix="/api")
 
 # Load the model only once when FastAPI starts
 

@@ -8,6 +8,7 @@ from app.routes import router
 
 app = FastAPI(
     docs_url="/api/docs",
+    openapi_url="/api/openapi.json",
     title='Weed Detection API',
     description='API for weed segmentation using YOLOv8-Seg',
     version='1.0.0'

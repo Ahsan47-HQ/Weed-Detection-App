@@ -42,7 +42,9 @@ A full-stack web application for automatic weed detection and semantic segmentat
 
 - React
 - Vite
-- CSS
+- Tailwind CSS
+- Framer Motion
+- Nginx
 
 ### Model
 
@@ -50,32 +52,37 @@ A full-stack web application for automatic weed detection and semantic segmentat
 - DeepWeeds Dataset
 - Exported to ONNX for efficient inference
 
+### Deployment
+- Docker
+- Docker Compose
+- Vercel
+- Nginx
+
 ---
 
 ## 📂 Project Structure
 
 ```text
 weed_detection_app/
-│
 ├── backend/
 │   ├── app/
-│   │   ├── main.py
-│   │   ├── routes.py
-│   │   ├── predictor.py
-│   │   ├── visualizer.py
-│   │   └── schemas.py
-│   │
 │   ├── models/
-│   │   ├── best.pt
 │   │   └── best.onnx
-│   │
+│   ├── Dockerfile
+│   ├── Dockerfile.vercel
 │   └── requirements.txt
 │
-└── frontend/
-    ├── src/
-    ├── public/
-    ├── package.json
-    └── vite.config.js
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   ├── Dockerfile
+│   ├── Dockerfile.vercel
+│   ├── nginx.conf
+│   └── package.json
+│
+├── docker-compose.yml
+├── vercel.json
+└── README.md
 ```
 
 ---
@@ -166,9 +173,9 @@ React Frontend
 
 | Endpoint | Description |
 |----------|-------------|
-| `GET /` | Welcome endpoint |
-| `GET /health` | Health check |
-| `POST /predict` | Upload an image and receive segmentation results |
+| `GET /api/` | Welcome endpoint |
+| `GET /api/health` | Health check |
+| `POST /api/predict` | Upload an image and receive segmentation results |
 
 ---
 
@@ -178,7 +185,13 @@ React Frontend
 - **Backend:** Render
 - **Inference Engine:** ONNX Runtime
 
-The frontend communicates with the backend through environment variables, allowing seamless switching between development and production environments.
+The application is containerized using Docker with separate frontend and backend containers.
+
+- The frontend is built using React + Vite and served using Nginx.
+- The backend uses FastAPI with ONNX Runtime for model inference.
+- The trained YOLOv8-Seg model is exported to ONNX format as `best.onnx`.
+- Docker Compose is used for local container orchestration.
+- The containerized frontend and backend are deployed on Vercel.
 
 ---
 
@@ -186,7 +199,6 @@ The frontend communicates with the backend through environment variables, allowi
 
 - Grad-CAM visualizations
 - Batch image inference
-- Docker containerization
 - Mobile-friendly interface
 - Performance benchmarking
 
